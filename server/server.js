@@ -23,6 +23,7 @@ app.use(express.static(__dirname + '/views/'));
 
 // Defining the Routes
 app.use('/api', require('./routes/index'));
+app.use('/api/user', require('./routes/user'));
 
 // Listening to port
 app.listen(port);
