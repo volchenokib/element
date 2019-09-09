@@ -2,7 +2,10 @@
   <div class="wrapper">
     <!-- Table header-->
     <div class="table__header">
-      <deleteButton />
+      <div class="table__action">
+        <addButton />
+        <deleteButton />
+      </div>
     </div>
     <!-- Table -->
     <el-table
@@ -333,9 +336,11 @@
 
 <script>
 import deleteButton from "@/components/deleteButton";
+import addButton from "@/components/addButton";
 export default {
-  name: "home",
+  name: "myTable",
   components: {
+    addButton,
     deleteButton
   },
   props: {
@@ -552,21 +557,17 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.table {
+  &__header {
+    display: flex;
+    margin: 0 15px 10px 15px;
+  }
+  &__action {
+    display: flex;
+    justify-content: space-between;
+    width: 140px;
+  }
 }
 .customForm {
   margin-right: 30px;

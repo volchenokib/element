@@ -5,11 +5,7 @@ import User from '../models/User';
 const router = express.Router();
 
 // http://localhost:9000/api/user
-router.get('/', async (req, res) => {
-	const user = await User.find({});
-	res.status(200).json(user);
-});
-
+// create
 router.post('/', async (req, res) => {
 	const userData = {
 		name: req.body.name,
@@ -32,6 +28,20 @@ router.post('/', async (req, res) => {
 	res.status(201).json(users);
 });
 
+// read
+router.get('/', async (req, res) => {
+	const user = await User.find({});
+	res.status(200).json(user);
+});
+
+// update
+router.put('/:id', async (req, res) => {
+	await User.findByIdAndUpdate({ id: req.params._id });
+	const users = await User.find({});
+	res.status(200).json(users);
+});
+
+// delete
 router.delete('/:_id', async (req, res) => {
 	await User.remove({ _id: req.params._id });
 	const users = await User.find({});
