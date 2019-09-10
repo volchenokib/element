@@ -23,7 +23,7 @@ export default {
 
   methods: {
     openCreateDialog() {
-      this.$store.dispatch("deleteGuests");
+      this.$store.commit("DIALOG", "create");
     }
   }
 };
