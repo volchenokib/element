@@ -17,7 +17,7 @@
       border
       :data="listOfGuests"
       :select-on-indeterminate="false"
-      @cell-click="cellHoverHandler"
+      @cell-click="cellClickHandler"
       @cell-mouse-enter="cellHoverHandler"
       @cell-mouse-leave="cellLeaveHandler"
       @selection-change="handleSelectionChange"
@@ -178,14 +178,16 @@ export default {
     }
   },
   methods: {
-    cellClickHandler() {},
+    cellClickHandler(row, column, cell, event) {
+      this.$store.commit("CREATECURRENTGUEST", row);
+      this.$store.commit("DIALOG", true);
+    },
 
     // select guest
     handleSelectionChange(guests) {
       const selectedGuestsId = guests.map(guest => guest._id);
       this.$store.commit("SELECTEDGUESTS", selectedGuestsId);
     },
-
     // show guests contacts
     cellHoverHandler(row, column, cell, event) {
       this.currentRow.email = row.email;

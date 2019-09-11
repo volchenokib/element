@@ -7,6 +7,24 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		guests: [],
+		emptyGuest: {
+			check_in_date: '',
+			check_out_date: '',
+			distance_to_event: null,
+			email: '',
+			gender: '',
+			guestId: null,
+			name: '',
+			phone: '',
+			max_payment: null,
+			plus_one: false,
+			ready_to_share_accommodation: false,
+			ready_to_share_room: false,
+			role: null,
+			status: null
+		},
+		newGuest: {},
+		currentGuest: {},
 		selectedGuests: [],
 		roles: [
 			{ id: 1, name: 'stuff' },
@@ -48,6 +66,18 @@ export default new Vuex.Store({
 
 		DIALOG(state, payload) {
 			state.isVisible = payload;
+		},
+		CREATENEWGUEST(state) {
+			state.newGuest = Object.assign({}, state.emptyGuest);
+		},
+		CLEARNEWGUEST(state) {
+			state.newGuest = {};
+		},
+		CREATECURRENTGUEST(state, payload) {
+			state.currentGuest = payload;
+		},
+		CLEARCURRENTGUEST(state) {
+			state.currentGuest = {};
 		},
 
 		SELECTEDGUESTS(state, payload) {
@@ -95,7 +125,6 @@ export default new Vuex.Store({
 		// Delete
 		async deleteGuests({ commit, state }) {
 			commit('PENDING');
-			console.log('sdf', state.selectedGuests[0]);
 			try {
 				const res = await axios.delete(
 					`http://localhost:9000/api/user/${state.selectedGuests[0]}`
@@ -118,24 +147,12 @@ export default new Vuex.Store({
 			return state.selectedGuests;
 		},
 
-		// flatten guests object for forms
-		emptyGuest() {
-			return {
-				check_in_date: '',
-				check_out_date: '',
-				distance_to_event: null,
-				email: '',
-				gender: '',
-				guestId: null,
-				name: '',
-				phone: '',
-				max_payment: null,
-				plus_one: false,
-				ready_to_share_accommodation: false,
-				ready_to_share_room: false,
-				role: null,
-				status: null
-			};
+		getNewGuest(state) {
+			return state.newGuest;
+		},
+
+		getCurrentGuest(state) {
+			return state.currentGuest;
 		},
 
 		getIsDisable(state) {

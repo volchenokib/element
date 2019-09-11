@@ -23,7 +23,8 @@ export default {
 
   methods: {
     openCreateDialog() {
-      this.$store.commit("DIALOG", "create");
+      this.$store.commit("CREATENEWGUEST");
+      this.$store.commit("DIALOG", true);
     }
   }
 };

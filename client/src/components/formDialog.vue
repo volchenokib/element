@@ -10,9 +10,10 @@
   >
     <!-- Dialog form -->
     <el-form
-      class="customForm"
-      :model="form"
       :rules="rules"
+      v-if="isVisible"
+      v-model="form"
+      class="customForm"
       ref="form"
       label-width="120px"
       size="medium"
@@ -194,7 +195,7 @@ export default {
 
   data() {
     return {
-      newGuest: {},
+      guest: {},
       serverError: {},
       rules: {
         name: [
@@ -258,19 +259,20 @@ export default {
     };
   },
 
+  mounted() {
+    this.form();
+  },
+
   computed: {
-    form() {
-      if (this.$store.getters.getIsVisible == "create") {
-        this.newGuest = this.$store.getters.emptyGuest;
-        console.log("this.newGuest", this.newGuest);
-        return this.newGuest;
-      } else {
-        this.newGuest = this.$store.getters.emptyGuest;
-        console.log("this.newGuest else", this.newGuest);
-        return this.newGuest;
-        // return this.currentGuest;
-      }
-    },
+    // form() {
+    //   if (this.$store.state.newGuest) {
+    //     this.guest = this.$store.getters.newGuest;
+    //     return this.guest;
+    //   } else {
+    //     this.guest = this.$store.getters.currentGuest;
+    //     return this.guest;
+    //   }
+    // },
 
     startDateOptions() {
       const prop = {
@@ -290,20 +292,17 @@ export default {
     },
 
     isVisible() {
-      if (
-        this.$store.getters.getIsVisible == "create" ||
-        this.$store.getters.getIsVisible == "update"
-      ) {
-        return true;
-      } else {
-        false;
-      }
+      console.log(
+        "this.$store.getters.getIsVisible",
+        this.$store.getters.getIsVisible
+      );
+      return this.$store.getters.getIsVisible;
     },
 
     dialogTitle() {
-      if (this.$store.getters.getIsVisible == "create") {
+      if (this.$store.state.newGuest) {
         return "Add User";
-      } else if (this.$store.getters.getIsVisible == "update") {
+      } else if (this.$store.state.currentGuest) {
         return "Change User";
       } else {
         return "";
@@ -311,9 +310,9 @@ export default {
     },
 
     dialogSubmitButton() {
-      if (this.$store.getters.getIsVisible == "create") {
+      if (this.$store.state.newGuest) {
         return "Add";
-      } else if (this.$store.getters.getIsVisible == "update") {
+      } else if (this.$store.currentGuest) {
         return "Change";
       } else {
         return "";
@@ -322,6 +321,17 @@ export default {
   },
 
   methods: {
+    form() {
+      if (this.$store.state.newGuest) {
+        this.guest = this.$store.getters.newGuest;
+        return this.guest;
+      } else if (this.$store.getters.currentGuest) {
+        this.guest = this.$store.getters.currentGuest;
+        return this.guest;
+      } else {
+        return;
+      }
+    },
     closeDialog() {
       this.$store.commit("DIALOG", false);
     },
@@ -332,6 +342,8 @@ export default {
     },
     onDialogClose() {
       this.$store.commit("DIALOG", false);
+      this.$store.commit("CLEARNEWGUEST");
+      this.$store.commit("CLEARCURRENTGUEST");
       this.$refs.form.resetFields();
       this.resetServerError();
     },
@@ -347,7 +359,6 @@ export default {
       this.serverError[field] = "";
     },
     submitGuestData(form) {
-      console.log("form", this.form);
       this.$refs.form.validate(valid => {
         if (valid) {
           if (this.dialog.submitButton === "Create") {
@@ -370,7 +381,6 @@ export default {
                     distance_to_event: `${error}`,
                     max_payment: `${error}`
                   };
-                  console.log("serverError", this.serverError);
                 }
               });
           } else {
