@@ -1,192 +1,188 @@
 <template>
   <!-- Add/Change Dialog -->
-  <el-dialog
+  <!-- <el-dialog
     :visible="isVisible"
     :title="dialogTitle"
     top="8vh"
     width="30%"
     lock-scrol
     @close="onDialogClose"
+  >-->
+  <!-- Dialog form -->
+  <el-form
+    :rules="rules"
+    v-model="form"
+    class="customForm"
+    ref="form"
+    label-width="120px"
+    size="medium"
   >
-    <!-- Dialog form -->
-    <el-form
-      :rules="rules"
-      v-if="isVisible"
-      v-model="form"
-      class="customForm"
-      ref="form"
-      label-width="120px"
-      size="medium"
-    >
-      <!-- Name -->
-      <el-form-item label="Name" prop="name" :class="{ 'is-error': serverError.name }">
-        <el-input v-model="form.name" @change="resetFieldsServerError('name')" autofocus></el-input>
-        <div class="serverError">{{this.serverError.name}}</div>
-      </el-form-item>
+    <!-- Name -->
+    <el-form-item label="Name" prop="name" :class="{ 'is-error': serverError.name }">
+      <el-input v-model="form.name" @change="resetFieldsServerError('name')" autofocus></el-input>
+      <div class="serverError">{{this.serverError.name}}</div>
+    </el-form-item>
 
-      <!-- Gender -->
-      <el-form-item label="Gender" prop="gender">
-        <el-radio-group v-model="form.gender">
-          <el-radio
-            label="M"
-            border
-            @change="resetFieldsServerError('gender') "
-            :class="{ 'is-error': serverError.name }"
-          >Male</el-radio>
-          <el-radio
-            label="F"
-            border
-            @change="resetFieldsServerError('gender') "
-            :class="{ 'is-error': serverError.name }"
-          >Female</el-radio>
-        </el-radio-group>
-        <div class="serverError">{{this.serverError.gender}}</div>
-      </el-form-item>
+    <!-- Gender -->
+    <el-form-item label="Gender" prop="gender">
+      <el-radio-group v-model="form.gender">
+        <el-radio
+          label="M"
+          border
+          @change="resetFieldsServerError('gender') "
+          :class="{ 'is-error': serverError.name }"
+        >Male</el-radio>
+        <el-radio
+          label="F"
+          border
+          @change="resetFieldsServerError('gender') "
+          :class="{ 'is-error': serverError.name }"
+        >Female</el-radio>
+      </el-radio-group>
+      <div class="serverError">{{this.serverError.gender}}</div>
+    </el-form-item>
 
-      <!-- Date  -->
-      <el-form-item label="Date" required>
-        <el-col :span="11">
-          <el-form-item prop="check_in_date" :class="{ 'is-error': serverError.check_out_date }">
-            <el-date-picker
-              v-model="form.check_in_date"
-              type="date"
-              placeholder="Check-In"
-              :picker-options="startDateOptions"
-              style="width: 100%;"
-              :clearable="false"
-              :editable="false"
-              value-format="yyyy-MM-dd"
-              @change="resetFieldsServerError('check_in_date')"
-            ></el-date-picker>
-            <div class="serverError">{{this.serverError.check_in_date}}</div>
-          </el-form-item>
-        </el-col>
+    <!-- Date  -->
+    <el-form-item label="Date" required>
+      <el-col :span="11">
+        <el-form-item prop="check_in_date" :class="{ 'is-error': serverError.check_out_date }">
+          <el-date-picker
+            v-model="form.check_in_date"
+            type="date"
+            placeholder="Check-In"
+            :picker-options="startDateOptions"
+            style="width: 100%;"
+            :clearable="false"
+            :editable="false"
+            value-format="yyyy-MM-dd"
+            @change="resetFieldsServerError('check_in_date')"
+          ></el-date-picker>
+          <div class="serverError">{{this.serverError.check_in_date}}</div>
+        </el-form-item>
+      </el-col>
 
-        <el-col class="customForm__dash" :span="2">-</el-col>
+      <el-col class="customForm__dash" :span="2">-</el-col>
 
-        <el-col :span="11">
-          <el-form-item prop="check_out_date" :class="{ 'is-error': serverError.check_out_date }">
-            <el-date-picker
-              v-model="form.check_out_date"
-              type="date"
-              placeholder="Check-Out"
-              style="width: 100%;"
-              :picker-options="{
+      <el-col :span="11">
+        <el-form-item prop="check_out_date" :class="{ 'is-error': serverError.check_out_date }">
+          <el-date-picker
+            v-model="form.check_out_date"
+            type="date"
+            placeholder="Check-Out"
+            style="width: 100%;"
+            :picker-options="{
                   firstDayOfWeek: 1
                 }"
-              :clearable="false"
-              value-format="yyyy-MM-dd"
-              @change="resetFieldsServerError('check_out_date')"
-            ></el-date-picker>
-            <div class="serverError">{{this.serverError.check_out_date}}</div>
-          </el-form-item>
-        </el-col>
-      </el-form-item>
+            :clearable="false"
+            value-format="yyyy-MM-dd"
+            @change="resetFieldsServerError('check_out_date')"
+          ></el-date-picker>
+          <div class="serverError">{{this.serverError.check_out_date}}</div>
+        </el-form-item>
+      </el-col>
+    </el-form-item>
 
-      <!-- Role -->
-      <el-form-item label="Role" prop="role" :class="{ 'is-error': serverError.role }">
-        <el-col :span="11">
-          <el-select
-            v-model="form.role"
-            placeholder="please select role"
-            @change="resetFieldsServerError('role')"
-          >
-            <el-option
-              v-for="role in this.$store.state.roles"
-              v-bind:key="role.id"
-              :label="role.name"
-              :value="role.id"
-            ></el-option>
-          </el-select>
-          <div class="serverError">{{this.serverError.role}}</div>
-        </el-col>
-      </el-form-item>
+    <!-- Role -->
+    <el-form-item label="Role" prop="role" :class="{ 'is-error': serverError.role }">
+      <el-col :span="11">
+        <el-select
+          v-model="form.role"
+          placeholder="please select role"
+          @change="resetFieldsServerError('role')"
+        >
+          <el-option
+            v-for="role in this.$store.state.roles"
+            v-bind:key="role.id"
+            :label="role.name"
+            :value="role.id"
+          ></el-option>
+        </el-select>
+        <div class="serverError">{{this.serverError.role}}</div>
+      </el-col>
+    </el-form-item>
 
-      <!-- Status -->
-      <el-form-item label="Status" prop="status" :class="{ 'is-error': serverError.status }">
-        <el-col :span="11">
-          <el-select
-            v-model="form.status"
-            placeholder="please select status"
-            @change="resetFieldsServerError('status')"
-          >
-            <el-option
-              v-for="status in this.$store.state.statuses"
-              v-bind:key="status.id"
-              :label="status.name"
-              :value="status.id"
-            ></el-option>
-          </el-select>
-          <div class="serverError">{{this.serverError.status}}</div>
-        </el-col>
-      </el-form-item>
+    <!-- Status -->
+    <el-form-item label="Status" prop="status" :class="{ 'is-error': serverError.status }">
+      <el-col :span="11">
+        <el-select
+          v-model="form.status"
+          placeholder="please select status"
+          @change="resetFieldsServerError('status')"
+        >
+          <el-option
+            v-for="status in this.$store.state.statuses"
+            v-bind:key="status.id"
+            :label="status.name"
+            :value="status.id"
+          ></el-option>
+        </el-select>
+        <div class="serverError">{{this.serverError.status}}</div>
+      </el-col>
+    </el-form-item>
 
-      <!-- Phone -->
-      <el-form-item label="Phone" prop="phone" :class="{ 'is-error': serverError.phone }">
-        <el-col :span="11">
-          <el-input
-            v-model="form.phone"
-            placeholder="79231234456"
-            @change="resetFieldsServerError('phone')"
-          ></el-input>
-          <div class="serverError">{{this.serverError.phone}}</div>
-        </el-col>
-      </el-form-item>
+    <!-- Phone -->
+    <el-form-item label="Phone" prop="phone" :class="{ 'is-error': serverError.phone }">
+      <el-col :span="11">
+        <el-input
+          v-model="form.phone"
+          placeholder="79231234456"
+          @change="resetFieldsServerError('phone')"
+        ></el-input>
+        <div class="serverError">{{this.serverError.phone}}</div>
+      </el-col>
+    </el-form-item>
 
-      <!-- Email -->
-      <el-form-item label="Email" prop="email" :class="{ 'is-error': serverError.email }">
-        <el-input v-model="form.email" @change="resetFieldsServerError('email')"></el-input>
-        <div class="serverError">{{this.serverError.email}}</div>
-      </el-form-item>
+    <!-- Email -->
+    <el-form-item label="Email" prop="email" :class="{ 'is-error': serverError.email }">
+      <el-input v-model="form.email" @change="resetFieldsServerError('email')"></el-input>
+      <div class="serverError">{{this.serverError.email}}</div>
+    </el-form-item>
 
-      <!-- Distatnce -->
-      <el-form-item
-        label="Distance"
-        prop="distance_to_event"
-        :class="{ 'is-error': serverError.distance_to_event }"
-      >
-        <el-col :span="11">
-          <el-input
-            v-model="form.distance_to_event"
-            @change="resetFieldsServerError('distance_to_event')"
-          ></el-input>
-        </el-col>
-        <div class="serverError">{{this.serverError.distance_to_event}}</div>
-      </el-form-item>
+    <!-- Distatnce -->
+    <el-form-item
+      label="Distance"
+      prop="distance_to_event"
+      :class="{ 'is-error': serverError.distance_to_event }"
+    >
+      <el-col :span="11">
+        <el-input
+          v-model="form.distance_to_event"
+          @change="resetFieldsServerError('distance_to_event')"
+        ></el-input>
+      </el-col>
+      <div class="serverError">{{this.serverError.distance_to_event}}</div>
+    </el-form-item>
 
-      <!-- Max payment -->
-      <el-form-item
-        label="Max payment"
-        prop="max_payment"
-        :class="{ 'is-error': serverError.max_payment }"
-      >
-        <el-col :span="11">
-          <el-input v-model="form.max_payment" @change="resetFieldsServerError('max_payment')"></el-input>
-        </el-col>
-        <div class="serverError">{{this.serverError.max_payment}}</div>
-      </el-form-item>
+    <!-- Max payment -->
+    <el-form-item
+      label="Max payment"
+      prop="max_payment"
+      :class="{ 'is-error': serverError.max_payment }"
+    >
+      <el-col :span="11">
+        <el-input v-model="form.max_payment" @change="resetFieldsServerError('max_payment')"></el-input>
+      </el-col>
+      <div class="serverError">{{this.serverError.max_payment}}</div>
+    </el-form-item>
 
-      <!-- Checkboxes -->
-      <el-form-item>
-        <el-checkbox
-          v-model="form.ready_to_share_accommodation"
-          label="Ready to share accomodation"
-        ></el-checkbox>
-        <el-checkbox v-model="form.ready_to_share_room" label="Ready to share room"></el-checkbox>
-        <el-checkbox v-model="form.plus_one" label="Plus one"></el-checkbox>
-      </el-form-item>
+    <!-- Checkboxes -->
+    <el-form-item>
+      <el-checkbox v-model="form.ready_to_share_accommodation" label="Ready to share accomodation"></el-checkbox>
+      <el-checkbox v-model="form.ready_to_share_room" label="Ready to share room"></el-checkbox>
+      <el-checkbox v-model="form.plus_one" label="Plus one"></el-checkbox>
+    </el-form-item>
 
-      <!-- Buttons -->
-      <el-form-item class="customForm__buttons">
-        <el-button @click="closeDialog">Cancel</el-button>
-        <el-button
-          type="primary"
-          :disabled="isDisable"
-          @click.prevent="submitGuestData('form')"
-        >{{dialogSubmitButton}}</el-button>
-      </el-form-item>
-    </el-form>
-  </el-dialog>
+    <!-- Buttons -->
+    <el-form-item class="customForm__buttons">
+      <el-button @click="closeDialog">Cancel</el-button>
+      <el-button
+        type="primary"
+        :disabled="isDisable"
+        @click.prevent="submitGuestData('form')"
+      >{{dialogSubmitButton}}</el-button>
+    </el-form-item>
+  </el-form>
+  <!-- </el-dialog> -->
 </template>
 
 <script>
@@ -196,6 +192,22 @@ export default {
   data() {
     return {
       guest: {},
+      // form: {
+      //   check_in_date: "",
+      //   check_out_date: "",
+      //   distance_to_event: null,
+      //   email: "",
+      //   gender: "",
+      //   guestId: null,
+      //   name: "",
+      //   phone: "",
+      //   max_payment: null,
+      //   plus_one: false,
+      //   ready_to_share_accommodation: false,
+      //   ready_to_share_room: false,
+      //   role: null,
+      //   status: null
+      // },
       serverError: {},
       rules: {
         name: [
@@ -259,18 +271,12 @@ export default {
     };
   },
 
-  mounted() {
-    this.form();
-  },
-
   computed: {
     // form() {
     //   if (this.$store.state.newGuest) {
-    //     this.guest = this.$store.getters.newGuest;
-    //     return this.guest;
+    //     return this.$store.getters.newGuest;
     //   } else {
-    //     this.guest = this.$store.getters.currentGuest;
-    //     return this.guest;
+    //     return this.$store.getters.currentGuest;
     //   }
     // },
 
@@ -291,23 +297,23 @@ export default {
       return this.$store.getters.getIsDisable;
     },
 
-    isVisible() {
-      console.log(
-        "this.$store.getters.getIsVisible",
-        this.$store.getters.getIsVisible
-      );
-      return this.$store.getters.getIsVisible;
-    },
+    // isVisible() {
+    //   console.log(
+    //     "this.$store.getters.getIsVisible",
+    //     this.$store.getters.getIsVisible
+    //   );
+    //   return this.$store.getters.getIsVisible;
+    // },
 
-    dialogTitle() {
-      if (this.$store.state.newGuest) {
-        return "Add User";
-      } else if (this.$store.state.currentGuest) {
-        return "Change User";
-      } else {
-        return "";
-      }
-    },
+    // dialogTitle() {
+    //   if (this.$store.state.newGuest) {
+    //     return "Add User";
+    //   } else if (this.$store.state.currentGuest) {
+    //     return "Change User";
+    //   } else {
+    //     return "";
+    //   }
+    // },
 
     dialogSubmitButton() {
       if (this.$store.state.newGuest) {

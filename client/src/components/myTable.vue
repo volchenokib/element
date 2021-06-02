@@ -132,19 +132,15 @@
         </template>
       </el-table-column>
     </el-table>
-
-    <formDialog />
   </div>
 </template>
 
 <script>
-import formDialog from "@/components/formDialog";
 import deleteButton from "@/components/deleteButton";
 import addButton from "@/components/addButton";
 export default {
   name: "myTable",
   components: {
-    formDialog,
     addButton,
     deleteButton
   },

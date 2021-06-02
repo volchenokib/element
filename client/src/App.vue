@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <myTable />
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import myTable from "./components/myTable.vue";
+// import myTable from "./components/myTable.vue";
 
 export default {
-  name: "app",
-  components: {
-    myTable
-  }
+  name: "app"
+  // components: {
+  //   myTable
+  // }
 };
 </script>
 
